@@ -79,7 +79,10 @@ public final class TransformationPipeline {
             new RemoveHiddenMembersTransform(context),
             new CollapseImportsTransform(context),
             new RewriteInitForLineStretchTransform(),
-            new ReOrderMembersForLineStretchTransform(context)
+            new ReOrderMembersForLineStretchTransform(context),
+            new RemoveAspectjWeaveTransform(context),
+            new RemoveRedundantBlocksTransform(context),
+            new AssimilateStaticFieldsTransform(context)
         };
     }
 
