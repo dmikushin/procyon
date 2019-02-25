@@ -13,3 +13,5 @@ cache.txt
 /.classpath
 /.project
 /.settings/
+/*/target/
+/*/nbactions.xml
