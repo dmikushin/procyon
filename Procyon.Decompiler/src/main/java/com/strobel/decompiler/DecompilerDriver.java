@@ -38,6 +38,7 @@ import com.strobel.decompiler.languages.LineNumberPosition;
 import com.strobel.decompiler.languages.TypeDecompilationResults;
 import com.strobel.decompiler.languages.java.JavaFormattingOptions;
 import com.strobel.io.PathHelper;
+import com.strobel.assembler.metadata.AspectJUnweaveUtilities;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -322,6 +323,7 @@ public class DecompilerDriver {
         }
 
         DeobfuscationUtilities.processType(resolvedType);
+        AspectJUnweaveUtilities.processType(resolvedType);
 
         if (!includeNested && (resolvedType.isNested() || resolvedType.isAnonymous() || resolvedType.isSynthetic())) {
             return;
