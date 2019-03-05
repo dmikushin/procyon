@@ -50,6 +50,7 @@ public class DecompilerSettings {
     private int _textBlockLineMinimum = 3;
     private CompilerTarget _forcedCompilerTarget;
     private boolean _arePreviewFeaturesEnabled;
+    private boolean _removeAspectJ;
 
     public DecompilerSettings() {
     }
@@ -255,4 +256,14 @@ public class DecompilerSettings {
         settings.setJavaFormattingOptions(JavaFormattingOptions.createDefault());
         return settings;
     }
+
+    public boolean getRemoveAspectJ() {
+        return _removeAspectJ;
+    }
+  
+    public void setRemoveAspectJ(boolean removeAspectJ) {
+        _removeAspectJ = removeAspectJ;
+    }
+    
+    
 }
