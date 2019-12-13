@@ -81,7 +81,7 @@ public final class TransformationPipeline {
             new RewriteInitForLineStretchTransform(),
             new ReOrderMembersForLineStretchTransform(context),
             new RemoveAspectjWeaveTransform(context),
-            new RemoveRedundantBlocksTransform(context),
+            new CleanupTransform(context),
             new AssimilateStaticFieldsTransform(context)
         };
     }
