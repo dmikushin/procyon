@@ -1,4 +1,15 @@
-![](https://mstrobel.github.io/procyon/procyon.png)
+![](https://raw.githubusercontent.com/jdelker/procyon/master/logo.png)
+
+[![Publish package to GitHub Packages](https://github.com/jdelker/procyon/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/jdelker/procyon/actions/workflows/maven-publish.yml)
+
+---
+
+**NOTE:** This repository is a fork of the original provided by [mstrobel/procyon](https://github.com/mstrobel/procyon) and contains some enhancements.
+In particular these are:
+
+- Removing AspectJ insertions, which were woven into the original bytecode.
+
+---
 
 *Procyon* is a suite of Java metaprogramming tools focused on code generation and analysis.  It includes the following libraries:
 
