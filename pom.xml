@@ -14,10 +14,14 @@
     <maven.compiler.target>8</maven.compiler.target>
   </properties>
 
-  <dependencies>
-
-  </dependencies>
-
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/jdelker/procyon</url>
+    </repository>
+  </distributionManagement>
+  
   <!-- sub modules -->
   <modules>
     <module>Procyon.Core</module>
