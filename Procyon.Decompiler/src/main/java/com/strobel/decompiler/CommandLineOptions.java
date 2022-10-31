@@ -195,6 +195,11 @@ public class CommandLineOptions {
         names = { "-ra", "--remove-aspectj" },
         description = "Remove AspectJ artefacts that were weaved into the bytecode.")
     private boolean _removeAspectj;
+    
+     @Parameter(
+        names = { "-jcf", "--jar-class-filter" },
+        description = "Only process classes/packages in JAR with this prefix ")
+    private String _jarClassFilter;
 
     public final List<String> getInputs() {
         return _inputs;
@@ -453,5 +458,13 @@ public class CommandLineOptions {
    
     public void setRemoveAspectj(final boolean removeAspectj) {
         _removeAspectj = removeAspectj;
+    }
+    
+    public String getJarClassFilter() {
+        return _jarClassFilter;
+    }
+   
+    public void setJarClassFilter(String jarClassFilter) {
+        this._jarClassFilter = jarClassFilter;
     }
 }

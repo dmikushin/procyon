@@ -51,6 +51,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Enumeration;
@@ -123,6 +125,7 @@ public class DecompilerDriver {
         settings.setTextBlockLineMinimum(options.getTextBlockLineMinimum());
         settings.setRemoveAspectJ(options.getRemoveAspectj());
         settings.setTypeLoader(new InputTypeLoader());
+        settings.setJarClassFilter(new JarClassFilter(options.getJarClassFilter()));
 
         if (!options.getSuppressBanner()) {
             settings.setOutputFileHeaderText("Decompiled by Procyon v" + Procyon.version());
@@ -257,6 +260,8 @@ public class DecompilerDriver {
         settings.setShowSyntheticMembers(false);
         settings.setTypeLoader(new CompositeTypeLoader(new JarTypeLoader(jar), oldTypeLoader));
 
+        JarClassFilter jcf = settings.getJarClassFilter();
+        
         try {
             MetadataSystem metadataSystem = new NoRetryMetadataSystem(settings.getTypeLoader());
 
@@ -274,6 +279,11 @@ public class DecompilerDriver {
 
                 final String internalName = StringUtilities.removeRight(name, ".class");
 
+                if (jcf.hasFilter() && !jcf.matches(internalName)) {
+                  System.out.printf("Skipping %s\n", internalName);
+                  continue;
+                }
+                
                 try {
                     decompileType(metadataSystem, internalName, options, decompilationOptions, false);
 

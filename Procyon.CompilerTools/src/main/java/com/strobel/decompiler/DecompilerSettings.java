@@ -51,6 +51,7 @@ public class DecompilerSettings {
     private CompilerTarget _forcedCompilerTarget;
     private boolean _arePreviewFeaturesEnabled;
     private boolean _removeAspectJ;
+    private JarClassFilter _jarClassFilter;
 
     public DecompilerSettings() {
     }
@@ -265,5 +266,11 @@ public class DecompilerSettings {
         _removeAspectJ = removeAspectJ;
     }
     
-    
+    public JarClassFilter getJarClassFilter() {
+        return _jarClassFilter;
+    }
+  
+    public void setJarClassFilter(JarClassFilter jarClassFilter) {
+        _jarClassFilter = jarClassFilter;
+    }
 }
