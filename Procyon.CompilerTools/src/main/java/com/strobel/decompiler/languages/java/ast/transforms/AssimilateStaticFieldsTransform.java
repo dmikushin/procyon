@@ -37,7 +37,7 @@ public class AssimilateStaticFieldsTransform extends ContextTrackingVisitor<Void
   }
 
   @Override
-  public Void visitTypeDeclaration(final TypeDeclaration node, final Void data) {
+  protected Void visitTypeDeclarationOverride(final TypeDeclaration node, final Void data) {
     TypeDefinition definition = node.getUserData(Keys.TYPE_DEFINITION);
 
     final Map<String, FieldDeclaration> oldValueFields = _valueFields;
@@ -51,7 +51,7 @@ public class AssimilateStaticFieldsTransform extends ContextTrackingVisitor<Void
 
     Void v = null;
     try {
-      v = super.visitTypeDeclaration(node, data);
+      v = super.visitTypeDeclarationOverride(node, data);
     } finally {
       _valueFields = oldValueFields;
       _valueInitializers = oldValueInitializers;
