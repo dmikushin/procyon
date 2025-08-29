@@ -74,7 +74,28 @@ public final class MetadataHelper {
     }
 
     public static boolean isEnclosedBy(final TypeReference innerType, final TypeReference outerType) {
+        // Use a set to track visited type pairs to prevent infinite recursion
+        return isEnclosedBy(innerType, outerType, new HashSet<>());
+    }
+    
+    private static boolean isEnclosedBy(final TypeReference innerType, 
+                                        final TypeReference outerType,
+                                        final Set<String> visitedPairs) {
         if (innerType == null || outerType == null || BuiltinTypes.Object.isEquivalentTo(outerType)) {
+            return false;
+        }
+
+        // Create a unique key for this type pair to detect cycles
+        final String pairKey = innerType.getInternalName() + ":" + outerType.getInternalName();
+        
+        // Check if we've already visited this pair (cycle detection)
+        if (!visitedPairs.add(pairKey)) {
+            return false; // Already visited, prevent infinite recursion
+        }
+        
+        // Also add a maximum depth check as additional safety
+        if (visitedPairs.size() > 100) {
+            // Too deep, likely a pathological case or obfuscated code
             return false;
         }
 
@@ -95,8 +116,8 @@ public final class MetadataHelper {
 
         final TypeReference outerBaseType = outerResolved != null ? outerResolved.getBaseType() : null;
 
-        return outerBaseType != null && isEnclosedBy(inner, outerBaseType) ||
-               innerResolved != null && isEnclosedBy(innerResolved.getBaseType(), outer);
+        return outerBaseType != null && isEnclosedBy(inner, outerBaseType, visitedPairs) ||
+               innerResolved != null && isEnclosedBy(innerResolved.getBaseType(), outer, visitedPairs);
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
