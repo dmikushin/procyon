@@ -65,6 +65,12 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class DecompilerDriver {
     public static void main(final String[] args) {
@@ -368,7 +374,37 @@ public class DecompilerDriver {
             System.out.printf("Decompiling %s...%n", typeName);
         }
 
-        final TypeDecompilationResults results = settings.getLanguage().decompileType(resolvedType, output, options);
+        // Create executor service for timeout control
+        final ExecutorService executor = Executors.newSingleThreadExecutor();
+        final Future<TypeDecompilationResults> future = executor.submit(new Callable<TypeDecompilationResults>() {
+            @Override
+            public TypeDecompilationResults call() throws Exception {
+                return settings.getLanguage().decompileType(resolvedType, output, options);
+            }
+        });
+
+        TypeDecompilationResults results;
+        try {
+            // Set timeout to 1 minute
+            results = future.get(60, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            future.cancel(true);
+            executor.shutdownNow();
+            System.err.printf("!!! ERROR: Decompilation of %s timed out after 60 seconds (possible infinite loop).%n", typeName);
+            if (writeToFile) {
+                writer.close();
+            }
+            return;
+        } catch (Exception e) {
+            executor.shutdownNow();
+            System.err.printf("!!! ERROR: Failed to decompile %s: %s%n", typeName, e.getMessage());
+            if (writeToFile) {
+                writer.close();
+            }
+            return;
+        } finally {
+            executor.shutdown();
+        }
 
         writer.flush();
 
