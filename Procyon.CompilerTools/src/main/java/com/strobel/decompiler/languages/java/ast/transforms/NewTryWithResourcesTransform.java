@@ -496,7 +496,23 @@ public class NewTryWithResourcesTransform extends ContextTrackingVisitor<Void> {
                 final Match m2 = Match.createNew();
 
                 if (_resourceDeclaration.matches(prev, m2)) {
-                    declaration = coalesce(firstOrDefault(m2.<Statement>get("assignment")), firstOrDefault(m2.<Statement>get("resource")));
+                    // "assignment" is an ExpressionStatement, "resource" can be either Statement or Expression
+                    final Statement assignment = firstOrDefault(m2.<Statement>get("assignment"));
+                    // Get "resource" as AstNode first to avoid ClassCastException
+                    final AstNode resourceNode = firstOrDefault(m2.<AstNode>get("resource"));
+                    
+                    if (assignment != null) {
+                        declaration = assignment;
+                    } else if (resourceNode instanceof Statement) {
+                        declaration = (Statement) resourceNode;
+                    } else if (resourceNode instanceof IdentifierExpression) {
+                        // Handle case where resource matched as an Expression (IdentifierExpression)
+                        // We need to find the actual variable declaration
+                        declaration = vd;
+                    } else {
+                        declaration = vd;
+                    }
+                    
                     initializer = firstOrDefault(m2.<Expression>get("resourceInitializer"));
                 }
                 else {
