@@ -128,6 +128,10 @@ public class RewriteInitForLineStretchTransform extends DepthFirstAstVisitor<Voi
             MethodDefinition methodDefinition = entityDeclaration.getUserData(Keys.METHOD_DEFINITION);
             if (methodDefinition != null && (methodDefinition.isConstructor() || methodDefinition.isTypeInitializer())) {
                 LineNumberTableAttribute lineNumberTable = SourceAttribute.find(AttributeNames.LineNumberTable, methodDefinition.getSourceAttributes());
+                if (lineNumberTable == null) {
+                    // No line number table available, skip this transformation
+                    return super.visitAssignmentExpression(node, data);
+                }
                 LineNumberTableConverter lineNumberTableConverter = new LineNumberTableConverter(lineNumberTable);
                 MemberReferenceExpression memberReferenceExpression = (MemberReferenceExpression) node.getFirstChild();
                 MemberReference memberReference = memberReferenceExpression.getUserData(Keys.MEMBER_REFERENCE);
