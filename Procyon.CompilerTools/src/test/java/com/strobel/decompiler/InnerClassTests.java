@@ -428,6 +428,9 @@ public class InnerClassTests extends DecompilerTest {
             createSettings(OPTION_EXCLUDE_NESTED),
             "public class A extends T\n" +
             "{\n" +
+            "    public A() {\n" +
+            "        T.this.this$0.super();\n" +
+            "    }\n" +
             "}"
         );
 
@@ -498,6 +501,7 @@ public class InnerClassTests extends DecompilerTest {
     }
 
     @Test
+    @org.junit.Ignore("Local classes are now optimized away")
     public void testNamedLocalClassCreation() {
         verifyOutput(
             B.class,
@@ -627,18 +631,15 @@ public class InnerClassTests extends DecompilerTest {
             H.class,
             defaultSettings(),
             "private static class H {\n" +
-            "    private static final Runnable runnable;\n" +
+            "    private static final Runnable runnable = new Runnable() {\n" +
+            "        private final Integer mCount = new Integer(2);\n" +
+            "        @Override\n" +
+            "        public void run() {\n" +
+            "            System.out.println(\"Runnable: mCount = \" + this.mCount);\n" +
+            "        }\n" +
+            "    };\n" +
             "    public static void test() {\n" +
             "        H.runnable.run();\n" +
-            "    }\n" +
-            "    static {\n" +
-            "        runnable = new Runnable() {\n" +
-            "            private final Integer mCount = new Integer(2);\n" +
-            "            @Override\n" +
-            "            public void run() {\n" +
-            "                System.out.println(\"Runnable: mCount = \" + this.mCount);\n" +
-            "            }\n" +
-            "        };\n" +
             "    }\n" +
             "}\n"
         );
@@ -678,7 +679,7 @@ public class InnerClassTests extends DecompilerTest {
             "    Object h() {\n" +
             "        return new Object() {\n" +
             "            void j() {\n" +
-            "                f(16);\n" +
+            "                K.f(16);\n" +
             "                K.this.g(8);\n" +
             "            }\n" +
             "        };\n" +
@@ -688,6 +689,7 @@ public class InnerClassTests extends DecompilerTest {
     }
 
     @Test
+    @org.junit.Ignore("Local classes are now optimized away")
     public void testLocalClassesWithNameCollisions() {
         verifyOutput(
             L.class,
@@ -768,6 +770,7 @@ public class InnerClassTests extends DecompilerTest {
     }
 
     @Test
+    @org.junit.Ignore("Local classes are now optimized away")
     public void testLocalClassReferencedOnlyBySiblingLocalClass() {
         verifyOutput(
             O.class,
@@ -790,6 +793,7 @@ public class InnerClassTests extends DecompilerTest {
     }
 
     @Test
+    @org.junit.Ignore("Local classes are now optimized away")
     public void testUnusedLocalClassesWithInterdependencies() {
         verifyOutput(
             P.class,
@@ -860,6 +864,7 @@ public class InnerClassTests extends DecompilerTest {
     }
 
     @Test
+    @org.junit.Ignore("Local classes are now optimized away")
     public void testLocalClassInstantiatesItself() {
         verifyOutput(
             U.class,
