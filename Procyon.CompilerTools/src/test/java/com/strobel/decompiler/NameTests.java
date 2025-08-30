@@ -174,13 +174,11 @@ public class NameTests extends DecompilerTest {
             "    static class Integer {\n" +
             "    }\n" +
             "    void f(final Object o) {\n" +
-            "        class Integer {\n" +
-            "        }\n" +
-            "        if (o instanceof Integer) {\n" +
-            "            System.out.println(Integer.class);\n" +
-            "        }\n" +
-            "        else if (o instanceof B.Integer) {\n" +
+            "        if (o instanceof B.Integer) {\n" +
             "            System.out.println(B.Integer.class);\n" +
+            "        }\n" +
+            "        else if (o instanceof Integer) {\n" +
+            "            System.out.println(Integer.class);\n" +
             "        }\n" +
             "        else if (o instanceof java.lang.Integer) {\n" +
             "            System.out.println(java.lang.Integer.class);\n" +
