@@ -164,7 +164,7 @@ public class OperatorTests extends DecompilerTest {
             defaultSettings(),
             "private static class A {\n" +
             "    public String test(final String s, final char c, final byte b, final float n, final Date date) {\n" +
-            "        return b + \":\" + (int)c + \":\" + c + \":\" + s + \":\" + n + \":\" + date;\n" +
+            "        return b + \":\" + (int)c + \":\" + c + \":\" + s + \":\" + n + \":\" + String.valueOf(date);\n" +
             "    }\n" +
             "}\n"
         );
@@ -283,7 +283,7 @@ public class OperatorTests extends DecompilerTest {
             "        return s;\n" +
             "    }\n" +
             "    public Object test2(Object o) {\n" +
-            "        o += \"allow compound assignment\";\n" +
+            "        o = String.valueOf(o) + \"allow compound assignment\";\n" +
             "        return o;\n" +
             "    }\n" +
             "    public String test3(String s) {\n" +
@@ -291,7 +291,7 @@ public class OperatorTests extends DecompilerTest {
             "        return s;\n" +
             "    }\n" +
             "    public Object test4(Object o) {\n" +
-            "        o = \"forbid compound assignment\" + o;\n" +
+            "        o = \"forbid compound assignment\" + String.valueOf(o);\n" +
             "        return o;\n" +
             "    }\n" +
             "}\n"
