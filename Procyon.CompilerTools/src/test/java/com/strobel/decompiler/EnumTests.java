@@ -129,17 +129,13 @@ public class EnumTests extends DecompilerTest {
             "    BAR(1),\n" +
             "    BAZ(5);\n" +
             "    private final int x;\n" +
-            "    private static final Map<String, B> map;\n" +
-            "    private static final B temp;\n" +
+            "    private static final Map<String, B> map = Collections.emptyMap();\n" +
+            "    private static final B temp = B.BAZ;\n" +
             "    private B(final int x) {\n" +
             "        this.x = x;\n" +
             "    }\n" +
             "    public static void test() {\n" +
             "        System.out.println(B.FOO);\n" +
-            "    }\n" +
-            "    static {\n" +
-            "        map = Collections.emptyMap();\n" +
-            "        temp = B.BAZ;\n" +
             "    }\n" +
             "}\n"
         );
@@ -210,7 +206,7 @@ public class EnumTests extends DecompilerTest {
             "private enum E {\n" +
             "    VALUE(1) {\n" +
             "        {\n" +
-            "            System.out.println(this + \": \" + this.code);\n" +
+            "            System.out.println(String.valueOf(this) + \": \" + this.code);\n" +
             "        }\n" +
             "    };\n" +
             "    public final int code;\n" +
