@@ -560,6 +560,7 @@ public final class RedundantCastUtility {
             final BinaryOperatorType op,
             final TypeReference resultType) {
 
+
             if (operand instanceof CastExpression) {
                 final CastExpression cast = (CastExpression) operand;
                 final Expression toCast = cast.getExpression();
@@ -568,6 +569,16 @@ public final class RedundantCastUtility {
                 final TypeReference otherType = getType(other);
 
                 if (castType != null && innerType != null) {
+                    // Special check for string concatenation with char to int conversion
+                    if (op == BinaryOperatorType.ADD && isStringType(otherType)) {
+                        final boolean wasChar = isChar(innerType);
+                        final boolean willBeChar = isChar(castType);
+                        
+                        if (wasChar != willBeChar) {
+                            return; // Don't remove the cast - it's semantic
+                        }
+                    }
+                    
                     //
                     // Cast is only redundant if without it the operator is still applicable and
                     // yields the same result type as before.
@@ -1002,6 +1013,26 @@ public final class RedundantCastUtility {
                 final BinaryOperatorExpression b = (BinaryOperatorExpression) parent;
                 final BinaryOperatorType operator = b.getOperator();
 
+                // Special handling for string concatenation
+                if (operator == BinaryOperatorType.ADD) {
+                    Expression other = b.getLeft();
+                    
+                    if (other == cast || other.isAncestorOf(cast)) {
+                        other = b.getRight();
+                    }
+                    
+                    final TypeReference otherType = getType(other);
+                    
+                    if (isStringType(otherType)) {
+                        final boolean wasChar = isChar(opType);
+                        final boolean willBeChar = isChar(castType);
+                        
+                        if (wasChar != willBeChar) {
+                            return true;
+                        }
+                    }
+                }
+
                 Expression firstOperand = b.getLeft();
                 Expression otherOperand = b.getRight();
 
@@ -1271,6 +1302,14 @@ public final class RedundantCastUtility {
             //
 
             return isPrimitiveOperationWithCast ^ isPrimitiveOperationWithoutCast;
+        }
+
+        private static boolean isStringType(final TypeReference type) {
+            return type != null && "java.lang.String".equals(type.getFullName());
+        }
+
+        private static boolean isChar(final TypeReference type) {
+            return type != null && type.isEquivalentTo(BuiltinTypes.Character);
         }
 
         // </editor-fold>

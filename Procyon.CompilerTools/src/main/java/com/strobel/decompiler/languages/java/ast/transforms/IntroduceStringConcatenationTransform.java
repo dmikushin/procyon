@@ -16,8 +16,10 @@
 
 package com.strobel.decompiler.languages.java.ast.transforms;
 
+import com.strobel.assembler.metadata.BuiltinTypes;
 import com.strobel.assembler.metadata.CommonTypeReferences;
 import com.strobel.assembler.metadata.DynamicCallSite;
+import com.strobel.assembler.metadata.IMethodSignature;
 import com.strobel.assembler.metadata.MethodReference;
 import com.strobel.assembler.metadata.TypeReference;
 import com.strobel.core.StringUtilities;
@@ -151,7 +153,31 @@ public class IntroduceStringConcatenationTransform extends ContextTrackingVisito
                 if (formalArguments.isEmpty()) {
                     return;
                 }
-                operands.add(formalArguments.removeFirst());
+                
+                Expression argument = formalArguments.removeFirst();
+                
+                // Check if we need to add an explicit cast
+                final IMethodSignature methodType = callSite.getMethodType();
+                if (methodType != null && methodType.getParameters() != null) {
+                    final int argumentIndex = operands.size() - (pattern.substring(0, nextMarker).length() > 0 ? 1 : 0);
+                    if (argumentIndex < methodType.getParameters().size()) {
+                        final TypeReference expectedType = methodType.getParameters().get(argumentIndex).getParameterType();
+                        final TypeReference actualType = getType(argument);
+                        
+                        // If char is expected to be int in string concatenation, add explicit cast
+                        if (actualType != null && expectedType != null && 
+                            actualType.isEquivalentTo(BuiltinTypes.Character) && 
+                            expectedType.isEquivalentTo(BuiltinTypes.Integer)) {
+                            
+                            final AstType intType = makeType(BuiltinTypes.Integer);
+                            if (intType != null) {
+                                argument = new CastExpression(intType, argument.clone());
+                            }
+                        }
+                    }
+                }
+                
+                operands.add(argument);
             }
 
             i = nextMarker + 1;
@@ -306,4 +332,15 @@ public class IntroduceStringConcatenationTransform extends ContextTrackingVisito
 
         return false;
     }
+    
+    private TypeReference getType(final Expression expression) {
+        if (expression == null) {
+            return null;
+        }
+        
+        final JavaResolver resolver = new JavaResolver(context);
+        final ResolveResult result = resolver.apply(expression);
+        return result != null ? result.getType() : null;
+    }
+    
 }
