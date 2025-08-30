@@ -29,6 +29,10 @@ public final class TransformationPipeline {
     @SuppressWarnings("UnusedParameters")
     public static IAstTransform[] createPipeline(final DecompilerContext context) {
         return new IAstTransform[] {
+            // Deobfuscation transforms (early in pipeline)
+            new ControlFlowUnflatteningTransform(context),
+            new OpaquePredicateRemovalTransform(context),
+            
             new RewriteLegacyClassConstantsTransform(context),
             new EnumRewriterTransform(context),
             new EnumSwitchRewriterTransform(context),
