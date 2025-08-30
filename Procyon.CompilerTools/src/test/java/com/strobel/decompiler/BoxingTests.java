@@ -235,7 +235,7 @@ public class BoxingTests extends DecompilerTest {
             "    }\n" +
             "    void t(final int x) {\n" +
             "        this.test(Integer.valueOf(x));\n" +
-            "        this.test((Object)x);\n" +
+            "        this.test(x);\n" +
             "        this.test(x);\n" +
             "    }\n" +
             "}\n"
