@@ -18,7 +18,7 @@
     <repository>
       <id>github</id>
       <name>GitHub Packages</name>
-      <url>https://maven.pkg.github.com/jdelker/procyon</url>
+      <url>https://maven.pkg.github.com/dmikushin/procyon</url>
     </repository>
   </distributionManagement>
   
