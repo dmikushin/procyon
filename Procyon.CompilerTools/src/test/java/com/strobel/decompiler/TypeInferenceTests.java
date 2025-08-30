@@ -228,7 +228,7 @@ public class TypeInferenceTests extends DecompilerTest {
             "            try {\n" +
             "                s2 = args[0];\n" +
             "                if (args == null) {\n" +
-            "                    throw (Exception)(Object)args;\n" +
+            "                    throw (Exception)args;\n" +
             "                }\n" +
             "                s = args[1];\n" +
             "            }\n" +
