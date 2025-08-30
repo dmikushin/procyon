@@ -135,7 +135,7 @@ public class CallTests extends DecompilerTest {
             "            B.this.f(\"B.f()\");\n" +
             "            this.f(\"C.f()\");\n" +
             "            this.f(\"C.f()\");\n" +
-            "            B.this.f(\"B.f()\");\n" +
+            "            super.f(\"B.f()\");\n" +
             "            B.this.g(\"B.g()\");\n" +
             "            B.this.g(\"B.g()\");\n" +
             "            this.g(\"C.g()\");\n" +
@@ -154,7 +154,7 @@ public class CallTests extends DecompilerTest {
             "                B.this.f(\"B.f()\");\n" +
             "                C.this.f(\"C.f()\");\n" +
             "                this.f(\"D.f()\");\n" +
-            "                C.this.f(\"C.f()\");\n" +
+            "                super.f(\"C.f()\");\n" +
             "                this.f(\"D.f()\");\n" +
             "                B.this.g(\"B.g()\");\n" +
             "                C.this.g(\"C.g()\");\n" +
