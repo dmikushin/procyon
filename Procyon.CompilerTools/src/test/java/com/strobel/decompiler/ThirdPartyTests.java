@@ -72,7 +72,7 @@ public class ThirdPartyTests extends DecompilerTest {
             "            final String[] array2 = array;\n" +
             "            try {\n" +
             "                final ArrayList list;\n" +
-            "                System.out.println(list = (ArrayList)(Object)array2);\n" +
+            "                System.out.println(list = (ArrayList)array2);\n" +
             "                array = (String[])list.toArray(new String[0]);\n" +
             "            }\n" +
             "            catch (final ClassCastException ex) {\n" +
@@ -264,7 +264,7 @@ public class ThirdPartyTests extends DecompilerTest {
             "        System.out.println(main(booleanValue));\n" +
             "        final byte[] array2 = { 1, 2, 3, 45, 6 };\n" +
             "        final boolean[] array3 = { false, true, false };\n" +
-            "        System.out.println(main((Object)array));\n" +
+            "        System.out.println(main(array));\n" +
             "        System.out.println(main(array3));\n" +
             "        System.out.println(main(array2));\n" +
             "        final char c = 'C';\n" +
