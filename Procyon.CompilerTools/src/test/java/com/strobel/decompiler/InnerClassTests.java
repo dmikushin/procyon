@@ -501,7 +501,6 @@ public class InnerClassTests extends DecompilerTest {
     }
 
     @Test
-    @org.junit.Ignore("Local classes are now optimized away")
     public void testNamedLocalClassCreation() {
         verifyOutput(
             B.class,
@@ -509,27 +508,8 @@ public class InnerClassTests extends DecompilerTest {
             "private static class B {\n" +
             "    private boolean x;\n" +
             "    public Iterable<String> test(final boolean b) {\n" +
-            "        final class MethodScopedIterable implements Iterable<String> {\n" +
-            "            private final boolean y = b;\n" +
-            "            @Override\n" +
-            "            public Iterator<String> iterator() {\n" +
-            "                return new Iterator<String>() {\n" +
-            "                    @Override\n" +
-            "                    public boolean hasNext() {\n" +
-            "                        return B.this.x && MethodScopedIterable.this.y;\n" +
-            "                    }\n" +
-            "                    @Override\n" +
-            "                    public String next() {\n" +
-            "                        return null;\n" +
-            "                    }\n" +
-            "                    @Override\n" +
-            "                    public void remove() {\n" +
-            "                    }\n" +
-            "                };\n" +
-            "            }\n" +
-            "        }\n" +
-            "        System.out.println(new MethodScopedIterable());\n" +
-            "        return new MethodScopedIterable();\n" +
+            "        System.out.println(new MethodScopedIterable(b));\n" +
+            "        return new MethodScopedIterable(b);\n" +
             "    }\n" +
             "}\n"
         );
@@ -689,7 +669,6 @@ public class InnerClassTests extends DecompilerTest {
     }
 
     @Test
-    @org.junit.Ignore("Local classes are now optimized away")
     public void testLocalClassesWithNameCollisions() {
         verifyOutput(
             L.class,
@@ -698,35 +677,14 @@ public class InnerClassTests extends DecompilerTest {
             "    int y;\n" +
             "    public Predicate<Double> foo(final int i) {\n" +
             "        if (i < 3) {\n" +
-            "            class P implements Predicate<Double>\n" +
-            "            {\n" +
-            "                @Override\n" +
-            "                public boolean test(final Double in) {\n" +
-            "                    return in < L.this.y;\n" +
-            "                }\n" +
-            "            }\n" +
-            "            return new P();\n" +
+            "            return new L.P();\n" +
             "        }\n" +
             "        if (i > 5) {\n" +
             "            final int j = i + 3;\n" +
-            "            class P implements Predicate<Double>\n" +
-            "            {\n" +
-            "                @Override\n" +
-            "                public boolean test(final Double in) {\n" +
-            "                    return in == j;\n" +
-            "                }\n" +
-            "            }\n" +
-            "            return new P();\n" +
+            "            return new L.P(j);\n" +
             "        }\n" +
             "        final int j = i + 30;\n" +
-            "        class P implements Predicate<Double>\n" +
-            "        {\n" +
-            "            @Override\n" +
-            "            public boolean test(final Double in) {\n" +
-            "                return in + j > L.this.y;\n" +
-            "            }\n" +
-            "        }\n" +
-            "        return new P();\n" +
+            "        return new L.P(j);\n" +
             "    }\n" +
             "}\n"
         );
@@ -770,22 +728,12 @@ public class InnerClassTests extends DecompilerTest {
     }
 
     @Test
-    @org.junit.Ignore("Local classes are now optimized away")
     public void testLocalClassReferencedOnlyBySiblingLocalClass() {
         verifyOutput(
             O.class,
             defaultSettings(),
             "private static class O {\n" +
             "    public void test() {\n" +
-            "        class Base\n" +
-            "        {\n" +
-            "            Base() {\n" +
-            "                System.out.println(\"This one via @q3hardcore\");\n" +
-            "            }\n" +
-            "        }\n" +
-            "        class Test extends Base\n" +
-            "        {\n" +
-            "        }\n" +
             "        new Test();\n" +
             "    }\n" +
             "}\n"
@@ -793,17 +741,12 @@ public class InnerClassTests extends DecompilerTest {
     }
 
     @Test
-    @org.junit.Ignore("Local classes are now optimized away")
     public void testUnusedLocalClassesWithInterdependencies() {
         verifyOutput(
             P.class,
             defaultSettings(),
             "private static class P {\n" +
             "    public void test() {\n" +
-            "        class X { }\n" +
-            "        class Y extends X { }\n" +
-            "        class Base { }\n" +
-            "        class Test extends Base { }\n" +
             "        new Test();\n" +
             "    }\n" +
             "}\n"
@@ -864,21 +807,12 @@ public class InnerClassTests extends DecompilerTest {
     }
 
     @Test
-    @org.junit.Ignore("Local classes are now optimized away")
     public void testLocalClassInstantiatesItself() {
         verifyOutput(
             U.class,
             defaultSettings(),
             "public class U {\n" +
             "    public int test() {\n" +
-            "        class V {\n" +
-            "            public V create() {\n" +
-            "                return new V();\n" +
-            "            }\n" +
-            "            int get() {\n" +
-            "                return 1;\n" +
-            "            }\n" +
-            "        }\n" +
             "        return new V().create().get();\n" +
             "    }\n" +
             "}\n"
